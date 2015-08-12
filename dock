@@ -33,7 +33,10 @@ function usage {
     echo "  destroy    Destroys the VM."
     echo ""
     echo "OPTIONS:"
-    echo "  -h --help     Display help."
+    echo "  -h --help        Display help."
+    echo "  --ip             VM's Private IP. Default: 192.168.0.222."
+    echo "  --box            Vagrant box. Default: ubuntu/trusty64"
+    echo "  --synced-folder  On the VM. Default: /usr/local/workdir"
 }
 
 # A function to display how to get help.
