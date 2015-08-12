@@ -3,16 +3,16 @@ DOCK
 
 Manage docker images and containers on a Vagrant VM.
 
-This script is a wrapper around a Vagrant VM with docker on it. 
+This script is a wrapper around a Vagrant VM with docker on it. It handles the creating/booting/managing of the VM, and it proxies docker commands to the VM.
 
 
 Requirements
 ------------
 
-OS X (Linux maybe?)
-Bash 3.2+
-Virtualbox 5.0+
-Vagrant 1.7.4+
+* OS 10.11 (Linux maybe?)
+* Bash 3.2+
+* Virtualbox 5.0+
+* Vagrant 1.7.4+
 
 
 Installation
