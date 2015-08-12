@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# DOCK
+# Installs the `dock` tool and its associated configuration files.
+#
+# Author JT Paasch
+# License MIT <http://opensource.org/licenses/MIT>
+# 
+
+# Where is the config kept?
+CONFIG_DIR=$HOME/.dock.d
+
+# Print a message.
+echo "Installing..."
+echo "-- install dock to /usr/local/bin"
+sudo install dock /usr/local/bin
+
+# Delete the config folder in the home directory if it exists.
+if [ -d $CONFIG_DIR ]; then
+    echo "-- deleting config from $CONFIG_DIR..."
+    rm -rf $CONFIG_DIR
+fi
+
+# Now create a new config folder and copy the config to it.
+echo "-- copying config to $CONFIG_DIR..."
+mkdir -p $CONFIG_DIR
+cp -r config $CONFIG_DIR
+
+# We're done.
+echo "-- done"
