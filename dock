@@ -102,7 +102,7 @@ function up {
             's/vm\.box = "\([^"]*\)"/vm\.box = "'$SAFE_BOX_ID'"/' \
             Vagrantfile
 
-        # If it worked, remove the backup file. Otherwise, replace it.
+        # If it worked, remove the backup. Otherwise, restore the original.
         if [[ "$?" == "0" ]]; then
             rm Vagrantfile.bak
         else
@@ -121,7 +121,7 @@ function up {
             's/, ip: "\([^"]*\)"/, ip: "'$BOX_IP_ADDRESS'"/' \
             Vagrantfile
 
-        # If it worked, remove the backup file. Otherwise, replace it.
+        # If it worked, remove the backup. Otherwise, restore the original.
         if [[ "$?" == "0" ]]; then
             rm Vagrantfile.bak
         else
@@ -143,7 +143,7 @@ function up {
             's/_folder "..", "\([^"]*\)"/_folder "..", "'$SAFE_SYNCED'"/'
             Vagrantfile
 
-        # If it worked, remove the backup file. Otherwise, replace it.
+        # If it worked, remove the backup. Otherwise, restore the original.
         if [[ "$?" == "0" ]]; then
             rm Vagrantfile.bak
         else
@@ -217,7 +217,7 @@ function status {
     cd $ORIGINAL_PWD
 }
 
-# If no arguments were provided, display the usage.
+# If no arguments were provided, say so. We can't continue.
 if [[ "$#" == "0" ]]; then
     echo "No arguments were provided."
     helphint
@@ -227,7 +227,7 @@ fi
 # Step through the arguments, one by one.
 while (( "$#" )); do
 
-    # What's the value of this argument ($1)?
+    # What's the value of the current argument in the chain ($1)?
     case $1 in
 
         # The help option.
@@ -250,7 +250,7 @@ while (( "$#" )); do
                           BOX_SYNCED_FOLDER=$1
                           ;;
 
-        # Initialize the VM.
+        # Initialize the VM folder.
         init)             VAGRANT_COMMAND=init
                           ;;
 
@@ -278,7 +278,7 @@ while (( "$#" )); do
         status)           VAGRANT_COMMAND=status
                           ;;
 
-        # Docker command.
+        # Capture the whole docker command.
         docker)           DOCKER_COMMAND="$@"
                           break
                           ;;
