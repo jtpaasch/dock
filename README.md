@@ -19,9 +19,15 @@ Installation
 ------------
 
 Clone the repo, and then run `./install`. That should make 
-the `dock` command available on your system. Get quick help:
+the `dock` command available on your system. 
+
+Get quick help:
 
     $ dock --help
+
+When the `install` script finishes, you may notice a note about 
+forwarding docker commands to the VM. See the section *Forwarding
+docker commands* below for more on that.
 
 
 Managing the VM
@@ -94,3 +100,17 @@ do
 
 and you will see the output of `docker ps`, which was executed on
 the VM.
+
+
+Forwarding docker commands
+--------------------------
+
+When the `install` script finishes, it will mention that if you want to 
+forward docker commands to the VM, you should add something like the
+following to your bash profile:
+
+    function docker { dock docker "$@"; }
+
+If you add that line to your bash profile (`~/.bash_profile` on OS X, 
+`~/.profile` on Ubuntu, etc.), you will be able to execute docker commands
+directly on your machine, as if docker was installed locally.
