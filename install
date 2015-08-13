@@ -29,7 +29,6 @@ CONFIG_DIR=$HOME/.dock.d
 
 # Print a message.
 echo "Installing..."
-echo ""
 
 # Delete the config folder in the home directory if it exists.
 if [ -d $CONFIG_DIR ]; then
