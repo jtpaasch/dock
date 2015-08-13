@@ -69,7 +69,7 @@ specific private IP (instead of the default 192.168.0.222):
 To use a different Vagrant box (instead of the default 
 Ubuntu 14.04 box `ubuntu/trusty64`):
 
-    $ dock up --box ubuntu/vivid64
+    $ dock up --box hashicorp/boot2docker
 
 To mount your current working directory to a specific path 
 on the VM (instead of the default `/usr/local/workdir`):
@@ -78,11 +78,11 @@ on the VM (instead of the default `/usr/local/workdir`):
 
 These options persist after you specify them once, because they get
 saved in your Vagrantfile, so you don't have to specify them again. 
-For instance, if you boot your VM with IP 192.168.0.10, like this
+For instance, if you boot your VM with IP 192.168.0.10, like this:
 
     $ dock up --ip 192.168.0.10
 
-you then can later just do this
+you then can later just do this:
 
     $ dock up
 
