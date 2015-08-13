@@ -11,7 +11,9 @@
 CONFIG_DIR=$HOME/.dock.d
 
 # Print a message.
+echo ""
 echo "Installing..."
+echo ""
 echo "-- install dock to /usr/local/bin"
 sudo install dock /usr/local/bin
 
