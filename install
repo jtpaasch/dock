@@ -28,3 +28,10 @@ cp -r config $CONFIG_DIR
 
 # We're done.
 echo "-- done"
+
+# Add a note about docker forwarding.
+echo "If you want to forward docker commands to the VM,"
+echo "add something like this to your .bash_profile:"
+echo ""
+echo 'function docker { dock docker "$@" }'
+echo ""

@@ -198,14 +198,22 @@ function ssh_into_vm {
     cd $ORIGINAL_PWD
 }
 
-# A function to pass all arguments to the VM.
-# It will execute them all as a command.
-function pass_arguments_to_vm {
+# A function to pass a command to the VM.
+function pass_command_to_vm {
     stop_if_not_init
     ORIGINAL_PWD=`pwd`
     cd $BOX
-    CMD_STRING="${ARGUMENTS[@]}"
+    CMD_STRING="${COMMAND[@]}"
     vagrant ssh -c "${CMD_STRING}"
+    cd $ORIGINAL_PWD
+}
+
+# A function to get the status of the VM.
+function status {
+    stop_if_not_init
+    ORIGINAL_PWD=`pwd`
+    cd $BOX
+    vagrant status | grep -o "default\s*[a-z]*" | grep -o "[a-z]*$"
     cd $ORIGINAL_PWD
 }
 
@@ -217,8 +225,6 @@ if [[ "$#" == "0" ]]; then
 fi
 
 # Step through the arguments, one by one.
-# We'll add any we don't recognize to the $ARGUMENTS list.
-ARGUMENTS=()
 while (( "$#" )); do
 
     # What's the value of this argument ($1)?
@@ -268,8 +274,25 @@ while (( "$#" )); do
         ssh)              VAGRANT_COMMAND=ssh_into_vm
                           ;;
 
-        # Anything else is an argument to pass directly to the VM.
-        *)                ARGUMENTS=($ARGUMENTS $1)
+        # Get the VM's status.
+        status)           VAGRANT_COMMAND=status
+                          ;;
+
+        # Docker command.
+        docker)           DOCKER_COMMAND="$@"
+                          break
+                          ;;
+
+        # Unrecognized options.
+        -*|--*)           echo "Unrecognized option: $1"
+                          helphint
+                          exit 1
+                          ;;
+
+        # Unrecognized commands.
+        *)                echo "Unrecognized command: $1"
+                          helphint
+                          exit 1
                           ;;
 
     esac
@@ -283,8 +306,8 @@ done
 if [ $VAGRANT_COMMAND ]; then
     $VAGRANT_COMMAND
 
-# If we have a list of other arguments, let's pass them directly
-# to the VM.
-elif [ $ARGUMENTS ]; then
-    pass_arguments_to_vm
+# If we have a docker command, pass it on to the VM.
+elif [ "${DOCKER_COMMAND[@]}" ]; then
+    COMMAND=$DOCKER_COMMAND
+    pass_command_to_vm
 fi
