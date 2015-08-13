@@ -234,6 +234,10 @@ while (( "$#" )); do
                           BOX_SYNCED_FOLDER=$1
                           ;;
 
+        # Initialize the VM.
+        init)             VAGRANT_COMMAND=init
+                          ;;
+
         # Boot the VM.
         up)               VAGRANT_COMMAND=up
                           ;;
