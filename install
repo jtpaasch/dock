@@ -7,15 +7,29 @@
 # License MIT <http://opensource.org/licenses/MIT>
 # 
 
+# Parse the arguments.
+while (( "$#" )); do
+    case $1 in
+
+        # A --with-local-docker option.
+        --with-local-docker)  WITH_LOCAL_DOCKER="true"
+                              ;;
+
+        # Anything is unrecognized.
+        *)  echo "Unrecognized argument: $1"
+            exit 1
+            ;;
+
+    esac
+    shift
+done
+
 # Where is the config kept?
 CONFIG_DIR=$HOME/.dock.d
 
 # Print a message.
-echo ""
 echo "Installing..."
 echo ""
-echo "-- install dock to /usr/local/bin"
-sudo install dock /usr/local/bin
 
 # Delete the config folder in the home directory if it exists.
 if [ -d $CONFIG_DIR ]; then
@@ -28,13 +42,16 @@ echo "-- copying config to $CONFIG_DIR..."
 mkdir -p $CONFIG_DIR
 cp -r config $CONFIG_DIR
 
+# Install the `dock` script as a regular shell command.
+echo "-- install dock to /usr/local/bin"
+sudo install dock /usr/local/bin
+
+# If the WITH_LOCAL_DOCKER option was selected,
+# install the `docker` proxy script as a regular shell command too.
+if [[ "$WITH_LOCAL_DOCKER" == "true" ]]; then
+    echo "-- install docker proxy to /usr/local/bin"
+    sudo install docker /usr/local/bin
+fi
+
 # We're done.
 echo "-- done"
-
-# Add a note about docker forwarding.
-echo ""
-echo "If you want to forward docker commands to the VM,"
-echo "add something like this to your .bash_profile:"
-echo ""
-echo '  function docker { dock docker "$@" }'
-echo ""

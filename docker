@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Display help if it's asked for.
+if [[ "$1" == "--help" ]]; then
+    echo "Proxies docker commands to the dock VM."
+    exit 1
+fi
+
+# Proxy the commands off to the dock VM.
+dock docker "$@"
+

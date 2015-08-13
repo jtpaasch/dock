@@ -18,16 +18,24 @@ Requirements
 Installation
 ------------
 
-Clone the repo, and then run `./install`. That should make 
-the `dock` command available on your system. 
+Clone the repo, navigate into the directory, and then run the install script:
 
-Get quick help:
+    $  ./install 
+
+That should make the `dock` command available on your system.
+
+If you want to install a proxy `docker` command on your system too,
+run the install script with a `--with-local-docker` flag:
+
+    $ ./install --with-local-docker
+
+Once installed, confirm that the `dock` program is installed:
 
     $ dock --help
 
-When the `install` script finishes, you may notice a note about 
-forwarding docker commands to the VM. See the section *Forwarding
-docker commands* below for more on that.
+And, if you want to check the `docker` command too:
+
+    $ docker --help 
 
 
 Managing the VM
@@ -102,15 +110,18 @@ and you will see the output of `docker ps`, which was executed on
 the VM.
 
 
-Forwarding docker commands
---------------------------
+Running docker commands on your machine
+---------------------------------------
 
-When the `install` script finishes, it will mention that if you want to 
-forward docker commands to the VM, you should add something like the
-following to your bash profile:
+If you ran the `./install` script with the `--with-local-docker` flag 
+(see the *Installation* section above), then you can execute most
+regular docker commands directly on your machine, as if docker was
+installed locally. For instance, you can type:
 
-    function docker { dock docker "$@"; }
+    $ docker images
 
-If you add that line to your bash profile (`~/.bash_profile` on OS X, 
-`~/.profile` on Ubuntu, etc.), you will be able to execute docker commands
-directly on your machine, as if docker was installed locally.
+and see a list of any docker images. 
+
+Under the hood, this just forwards your command on to the VM, and 
+it gets executed on the VM, not on your local machine.
+
