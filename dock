@@ -268,12 +268,6 @@ while (( "$#" )); do
         ssh)              VAGRANT_COMMAND=ssh_into_vm
                           ;;
 
-        # An unrecognized option.
-        -*|--*)           echo "Unrecognized option: $1"
-                          helphint
-                          exit 1
-                          ;;
-
         # Anything else is an argument to pass directly to the VM.
         *)                ARGUMENTS=($ARGUMENTS $1)
                           ;;
