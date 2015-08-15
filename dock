@@ -14,7 +14,7 @@ PROGRAM_NAME=`basename $BASH_SOURCE`
 CONFIG=$HOME/.dock.d/config
 
 # Where is the vagrant box kept?
-BOX=.box
+BOX=$HOME/.dock.d/box
 
 # A function to display help/usage.
 function usage {
@@ -47,8 +47,6 @@ function helphint {
 # A function that checks if the folder is initialized for the VM.
 # If not, it prints a message and exits.
 function stop_if_not_init {
-    # TODO: Walk up the directory tree to find a $BOX folder,
-    # and then set $BOX to that.
     if [ ! -f $BOX/Vagrantfile ]; then
         echo "The VM is not initialized."
         echo "Try: $PROGRAM_NAME init"
@@ -62,12 +60,13 @@ function init {
     # If a vagrant folder already exists, exit.
     if [ -d $BOX ]; then
         echo "Already initialized."
-        echo "Delete $BOX and try again, or run: $PROGRAM_NAME up"
+        echo "To re-initialize, delete $BOX and try again." 
+        echo "To boot the VM, run: $PROGRAM_NAME up"
         exit 1
     fi
 
     # Otherwise, create a vagrant folder.
-    mkdir $BOX
+    mkdir -p $BOX
 
     # Move into the vagrant folder.
     ORIGINAL_PWD=`pwd`
