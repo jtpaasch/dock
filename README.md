@@ -1,15 +1,17 @@
 DOCK
 ====
 
-Manage docker images and containers on a Vagrant VM.
+Use docker on a Vagrant VM.
 
-This script is a wrapper around a Vagrant VM with docker on it. It handles the creating/booting/managing of the VM, and it proxies docker commands to the VM.
+This program is a wrapper around a Vagrant VM with docker on it. It
+handles the creating/booting/managing of the VM, and it proxies docker 
+commands to the VM.
 
 
 Requirements
 ------------
 
-* OS 10.11 (Linux maybe?)
+* OS 10.11 (Does it work on Linux? Maybe?)
 * Bash 3.2+
 * Virtualbox 5.0+
 * Vagrant 1.7.4+
@@ -18,7 +20,8 @@ Requirements
 Installation
 ------------
 
-Clone the repo, navigate into the directory, and then run the install script:
+Clone (or download) the repo, navigate into the directory where you
+downloaded it, and then run the install script:
 
     $  ./install 
 
@@ -41,11 +44,7 @@ And, if you want to check the `docker` command too:
 Managing the VM
 ---------------
 
-Make a folder to do your work in:
-
-    $ mkdir myproject && cd myproject
-
-Initialize the folder:
+Initialize the dock VM:
 
     $ dock init
 
@@ -84,9 +83,9 @@ on the VM (instead of the default `/usr/local/workdir`):
 
     $ dock up --synced-folder /var/app
 
-These options persist after you specify them once, because they get
-saved in your Vagrantfile, so you don't have to specify them again. 
-For instance, if you boot your VM with IP 192.168.0.10, like this:
+These options get saved in your Vagrantfile, so you don't have to specify 
+them again until you want to change them. For instance, if you boot 
+your VM with IP 192.168.0.10, like this:
 
     $ dock up --ip 192.168.0.10
 
@@ -114,7 +113,7 @@ Running docker commands on your machine
 ---------------------------------------
 
 If you ran the `./install` script with the `--with-local-docker` flag 
-(see the *Installation* section above), then you can execute most
+(see the *Installation* section above), then you can execute many
 regular docker commands directly on your machine, as if docker was
 installed locally. For instance, you can type:
 
@@ -124,4 +123,3 @@ and see a list of any docker images.
 
 Under the hood, this just forwards your command on to the VM, and 
 it gets executed on the VM, not on your local machine.
-
