@@ -20,8 +20,8 @@ Requirements
 Installation
 ------------
 
-Clone (or download) the repo, navigate into the directory where you
-downloaded it, and then run the install script:
+Clone the repo, navigate into the directory where you downloaded it,
+and then run the install script:
 
     $  ./install 
 
@@ -32,7 +32,11 @@ run the install script with a `--with-local-docker` flag:
 
     $ ./install --with-local-docker
 
-Once installed, confirm that the `dock` program is installed:
+See the section *Running docker commands on your machine* below for more
+about how the local `docker` command works.
+
+Once the install script is finished, confirm that the `dock` program 
+is installed:
 
     $ dock --help
 
@@ -96,16 +100,15 @@ you then can later just do this:
 and it will boot with IP 192.168.0.10 again.
 
 
-Running docker commands
------------------------
+Running docker commands on the VM
+---------------------------------
 
-Once the VM is up (with `dock up`), you can run any docker commands
-you like, and they will be passed to the VM. For instance, you can
-do
+Once the VM is booted (with `dock up`), you can run any docker commands
+you like on it. For instance, you can do
 
     $ dock docker ps
 
-and you will see the output of `docker ps`, which was executed on
+and you will see the output of `docker ps`, which `dock` executed on
 the VM.
 
 
@@ -121,5 +124,5 @@ installed locally. For instance, you can type:
 
 and see a list of any docker images. 
 
-Under the hood, this just forwards your command on to the VM, and 
+Under the hood, this just forwards your `docker` command on to the VM; 
 it gets executed on the VM, not on your local machine.
