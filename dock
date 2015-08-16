@@ -11,23 +11,22 @@
 PROGRAM_NAME=`basename $BASH_SOURCE`
 
 # Where are default config files kept?
-CONFIG=$HOME/.dock.d/config
+CONFIG=$HOME/.dock.d
 
 # Where is the vagrant box kept?
-BOX=$HOME/.dock.d/box
+BOX=$HOME/.dock.d
 
 # A function to display help/usage.
 function usage {
     echo "-- DOCK --"
-    echo "Manage docker images and containers on a Vagrant VM."
+    echo "Run docker on a Vagrant VM."
     echo ""
     echo "USAGE:"
     echo "  $PROGRAM_NAME [options] <command> [arg1] [arg2] [...] [argn] "
     echo ""
     echo "COMMANDS:"
-    echo "  init       Initializes the VM."
-    echo "  up         Boots the VM. It gets created if it doesn't exist."
-    echo "  down       Shuts down the VM."
+    echo "  start      Boots the VM."
+    echo "  stop       Shuts down the VM."
     echo "  provision  Provision the VM."
     echo "  ssh        SSH into the VM."
     echo "  destroy    Destroys the VM."
@@ -36,7 +35,6 @@ function usage {
     echo "  -h --help        Display help."
     echo "  --ip             VM's Private IP. Default: 192.168.0.222."
     echo "  --box            Vagrant box. Default: ubuntu/trusty64"
-    echo "  --synced-folder  On the VM. Default: /usr/local/workdir"
 }
 
 # A function to display how to get help.
@@ -48,36 +46,10 @@ function helphint {
 # If not, it prints a message and exits.
 function stop_if_not_init {
     if [ ! -f $BOX/Vagrantfile ]; then
-        echo "The VM is not initialized."
-        echo "Try: $PROGRAM_NAME init"
+        echo "The VM is not properly initialized."
+        echo "Try running the install script again."
         exit 1
     fi
-}
-
-# A function to initialize the VM.
-function init {
-
-    # If a vagrant folder already exists, exit.
-    if [ -d $BOX ]; then
-        echo "Already initialized."
-        echo "To re-initialize, delete $BOX and try again." 
-        echo "To boot the VM, run: $PROGRAM_NAME up"
-        exit 1
-    fi
-
-    # Otherwise, create a vagrant folder.
-    mkdir -p $BOX
-
-    # Move into the vagrant folder.
-    ORIGINAL_PWD=`pwd`
-    cd $BOX
-
-    # Copy the Vagrantfile over.
-    cp $CONFIG/Vagrantfile .
-
-    # Back out of the vagrant folder and go back to the previous pwd.
-    cd $ORIGINAL_PWD
-
 }
 
 # A function to boot the VM.
@@ -125,28 +97,6 @@ function up {
             rm Vagrantfile.bak
         else
             echo "Couldn't modify Vagrantfile with $BOX_IP_ADDRESS."
-            mv $BOX/Vagrantfile.bak $BOK/Vagrantfile
-            exit 1
-        fi
-
-    fi
-
-    # If a synced folder was specified, try to put it in the Vagrantfile.
-    if [ $SYNCED_FOLDER ]; then
-
-        # Escape backslashes so it can go in the sed regex.
-        SAFE_SYNCED=${SYNCED_FOLDER/\//\\\/}
-
-        # Use sed to replace the box identifier.
-        sed -i.bak \
-            's/_folder "..", "\([^"]*\)"/_folder "..", "'$SAFE_SYNCED'"/'
-            Vagrantfile
-
-        # If it worked, remove the backup. Otherwise, restore the original.
-        if [[ "$?" == "0" ]]; then
-            rm Vagrantfile.bak
-        else
-            echo "Couldn't modify Vagrantfile with $SYNCED_FOLDER."
             mv $BOX/Vagrantfile.bak $BOK/Vagrantfile
             exit 1
         fi
@@ -244,21 +194,12 @@ while (( "$#" )); do
                           BOX_IDENTIFIER=$1
                           ;;
 
-        # A --synced-folder option, e.g., --synced-folder /app
-        --synced-folder)  shift
-                          BOX_SYNCED_FOLDER=$1
-                          ;;
-
-        # Initialize the VM folder.
-        init)             VAGRANT_COMMAND=init
-                          ;;
-
         # Boot the VM.
-        up)               VAGRANT_COMMAND=up
+        start)            VAGRANT_COMMAND=up
                           ;;
 
         # Shut down the VM.
-        down)             VAGRANT_COMMAND=down
+        stop)             VAGRANT_COMMAND=down
                           ;;
 
         # Provision the VM.

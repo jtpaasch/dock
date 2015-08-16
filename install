@@ -7,9 +7,27 @@
 # License MIT <http://opensource.org/licenses/MIT>
 # 
 
+# A function to display usage.
+function usage {
+    echo "Installs the dock tool."
+    echo ""
+    echo "USAGE:"
+    echo "  ./install"
+    echo ""
+    echo "OPTIONS:"
+    echo "  -h --help            Display help."
+    echo "  --with-local-docker  Install a proxy `docker` command too."
+    echo ""
+}
+
 # Parse the arguments.
 while (( "$#" )); do
     case $1 in
+
+        # A --help option.
+        -h|--help)  usage
+                    exit 1
+                    ;;
 
         # A --with-local-docker option.
         --with-local-docker)  WITH_LOCAL_DOCKER="true"
@@ -27,19 +45,29 @@ done
 # Where is the config kept?
 CONFIG_DIR=$HOME/.dock.d
 
-# Print a message.
+# Let the user know what's happening.
 echo "Installing..."
 
-# Delete the config folder in the home directory if it exists.
+# Does the config folder already exist?
 if [ -d $CONFIG_DIR ]; then
+
+    # Destroy the VM, in case it already exists.
+    ORIGINAL_PWD=`pwd`
+    cd $CONFIG_DIR
+    echo "-- clean up old VMs..."
+    vagrant destroy --force >/dev/null
+    cd $ORIGINAL_PWD
+
+    # Now get rid of the config directory.
     echo "-- deleting config from $CONFIG_DIR..."
     rm -rf $CONFIG_DIR
+
 fi
 
 # Now create a new config folder and copy the config to it.
 echo "-- copying config to $CONFIG_DIR..."
 mkdir -p $CONFIG_DIR
-cp -r config $CONFIG_DIR
+cp -r Vagrantfile $CONFIG_DIR
 
 # Install the `dock` script as a regular shell command.
 echo "-- install dock to /usr/local/bin"

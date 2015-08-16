@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
     config.vm.network :private_network, ip: "192.168.0.222"
 
     # Where should our synced folder exist on the VM?
-    config.vm.synced_folder "..", "/usr/local/workdir"
+    config.vm.synced_folder "#{ENV['HOME']}", "#{ENV['HOME']}"
 
     # Install docker on the VM.
     config.vm.provision "docker"

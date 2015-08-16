@@ -32,7 +32,7 @@ run the install script with a `--with-local-docker` flag:
 
     $ ./install --with-local-docker
 
-See the section *Running docker commands on your machine* below for more
+See the section _Running docker commands on your machine_ below for more
 about how the local `docker` command works.
 
 Once the install script is finished, confirm that the `dock` program 
@@ -48,13 +48,9 @@ And, if you want to check the `docker` command too:
 Managing the VM
 ---------------
 
-Initialize the dock VM:
+Boot the VM:
 
-    $ dock init
-
-Now you can boot the VM:
-
-    $ dock up
+    $ dock start
 
 SSH into it:
 
@@ -62,7 +58,7 @@ SSH into it:
 
 You can shut it down:
 
-    $ dock down
+    $ dock stop
 
 Or destroy it:
 
@@ -72,38 +68,34 @@ Or destroy it:
 Customize the VM
 ----------------
 
-You can customize the VM's boot settings. To make it run on a 
-specific private IP (instead of the default 192.168.0.222):
+You can boot the VM with a specific private IP. By default, it boots
+at 192.168.0.222, but you can change it with the `--ip` flag:
 
-    $ dock up --ip 192.168.0.10
+    $ dock start --ip 192.168.0.10
 
-To use a different Vagrant box (instead of the default 
-Ubuntu 14.04 box `ubuntu/trusty64`):
+You can boot a different Vagrant box too. By default, `dock` boots a 
+Ubuntu 14.04 box (`ubuntu/trusty64`), but you can boot a different one
+with the `--box` flag: 
 
-    $ dock up --box hashicorp/boot2docker
-
-To mount your current working directory to a specific path 
-on the VM (instead of the default `/usr/local/workdir`):
-
-    $ dock up --synced-folder /var/app
+    $ dock start --box hashicorp/boot2docker
 
 These options get saved in your Vagrantfile, so you don't have to specify 
 them again until you want to change them. For instance, if you boot 
-your VM with IP 192.168.0.10, like this:
+your VM with IP `192.168.0.10`, like this:
 
-    $ dock up --ip 192.168.0.10
+    $ dock start --ip 192.168.0.10
 
 you then can later just do this:
 
-    $ dock up
+    $ dock start
 
-and it will boot with IP 192.168.0.10 again.
+and it will boot with IP `192.168.0.10` again.
 
 
 Running docker commands on the VM
 ---------------------------------
 
-Once the VM is booted (with `dock up`), you can run any docker commands
+Once the VM is booted (with `dock start`), you can run any docker commands
 you like on it. For instance, you can do
 
     $ dock docker ps
@@ -116,13 +108,13 @@ Running docker commands on your machine
 ---------------------------------------
 
 If you ran the `./install` script with the `--with-local-docker` flag 
-(see the *Installation* section above), then you can execute many
-regular docker commands directly on your machine, as if docker was
+(see the _Installation_ section above), then you can execute many
+regular docker commands directly on your machine, as if docker were
 installed locally. For instance, you can type:
 
-    $ docker images
+    $ docker ps
 
-and see a list of any docker images. 
+and see the output of `docker ps` directly.
 
-Under the hood, this just forwards your `docker` command on to the VM; 
+Under the hood, this just forwards the `docker ps` command on to the VM; 
 it gets executed on the VM, not on your local machine.
