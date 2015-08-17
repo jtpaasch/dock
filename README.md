@@ -79,6 +79,10 @@ with the `--box` flag:
 
     $ dock start --box hashicorp/boot2docker
 
+You can also choose to sync a specific folder on your computer with the `dock` VM. By default `dock` replicates your home directory on the VM. For instance, on OS X, your home directory `~` is `/Users/<username>`, so `dock` makes a folder on the VM at `Users/<username` and syncs it with yours. But you can change this with the `--share <host_path>:<vm_path>` option. For instance:
+
+    $ dock start --share ..:/usr/share
+
 These options get saved in your Vagrantfile, so you don't have to specify 
 them again until you want to change them. For instance, if you boot 
 your VM with IP `192.168.0.10`, like this:

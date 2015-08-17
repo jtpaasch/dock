@@ -22,7 +22,7 @@ function usage {
     echo "Run docker on a Vagrant VM."
     echo ""
     echo "USAGE:"
-    echo "  $PROGRAM_NAME [options] <command> [arg1] [arg2] [...] [argn] "
+    echo "  $PROGRAM_NAME [options] <command>"
     echo ""
     echo "COMMANDS:"
     echo "  start      Boots the VM."
@@ -32,9 +32,10 @@ function usage {
     echo "  destroy    Destroys the VM."
     echo ""
     echo "OPTIONS:"
-    echo "  -h --help        Display help."
-    echo "  --ip             VM's Private IP. Default: 192.168.0.222."
-    echo "  --box            Vagrant box. Default: ubuntu/trusty64"
+    echo "  -h --help  Display help."
+    echo "  --ip       The VM's private IP. Defaults to: 192.168.0.222."
+    echo "  --box      The Vagrant box to run. Defaults to: ubuntu/trusty64"
+    echo '  --share    <host-path>:<vm-path>. Defaults to: $HOME:$HOME'
 }
 
 # A function to display how to get help.
@@ -97,6 +98,41 @@ function up {
             rm Vagrantfile.bak
         else
             echo "Couldn't modify Vagrantfile with $BOX_IP_ADDRESS."
+            mv $BOX/Vagrantfile.bak $BOK/Vagrantfile
+            exit 1
+        fi
+
+    fi
+
+    # If a share folder was specified, try to put it in the Vagrantfile.
+    if [ $SHARE ]; then
+
+        # The $SHARE option comes in the form <host_path>:<vm_path>.
+        # We need to split on the colon to get the host and vm paths.
+        IFS=':' read HOST_PATH VM_PATH <<< "$SHARE"
+        if [[ -z $HOST_PATH ]] || [[ -z $VM_PATH ]]; then
+            echo "Incorrect shared folder format."
+            helphint
+            exit 1
+        fi
+
+        # Escape backslashes in paths so they can go in the sed regex.
+        ESCAPED_HOST_PATH=${HOST_PATH//\//\\\/}
+        ESCAPED_VM_PATH=${VM_PATH//\//\\\/}
+
+        # Use sed to replace the box identifier.
+        MATCH='_folder "\([^"]*\)", "\([^"]*\)"'
+        REPLACE='_folder "'${ESCAPED_HOST_PATH}'", "'${ESCAPED_VM_PATH}'"'
+        SUBSTITUTION='s/'${MATCH}'/'${REPLACE}'/'
+        sed -i.bak \
+            "${SUBSTITUTION}" \
+            Vagrantfile
+
+        # If it worked, remove the backup. Otherwise, restore the original.
+        if [[ "$?" == "0" ]]; then
+            rm Vagrantfile.bak
+        else
+            echo "Couldn't modify Vagrantfile with $SHARE."
             mv $BOX/Vagrantfile.bak $BOK/Vagrantfile
             exit 1
         fi
@@ -180,60 +216,119 @@ while (( "$#" )); do
     case $1 in
 
         # The help option.
-        -h|--help)        usage
-                          exit 1
-                          ;;
+        -h|--help)    usage
+                      exit 1
+                      ;;
 
         # An IP option, e.g. --ip 192.168.0.20
-        --ip)             shift
+        --ip)         if [[ -z $BOX_IP_ADDRESS ]]; then
+                          shift
                           BOX_IP_ADDRESS=$1
-                          ;;
+                      else
+                          echo "Specify --ip only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # A --box option, e.g. --box ubuntu/vivid64
-        --box)            shift
+        --box)        if [[ -z $BOX_IDENTIFIER ]]; then
+                          shift
                           BOX_IDENTIFIER=$1
-                          ;;
+                      else
+                          echo "Specify --box only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
+
+        # A --share option, e.g. --share .:/usr/share
+        --share)      if [[ -z $SHARE ]]; then
+                          shift
+                          SHARE=$1
+                      else
+                          echo "Specify --share only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # Boot the VM.
-        start)            VAGRANT_COMMAND=up
-                          ;;
+        start)        if [[ -z $VAGRANT_COMMAND ]]; then
+                          VAGRANT_COMMAND=up
+                      else
+                          echo "Specify 'start' only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # Shut down the VM.
-        stop)             VAGRANT_COMMAND=down
-                          ;;
+        stop)         if [[ -z $VAGRANT_COMMAND ]]; then
+                          VAGRANT_COMMAND=down
+                      else
+                          echo "Specify 'stop' only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # Provision the VM.
-        provision)        VAGRANT_COMMAND=provision
-                          ;;
+        provision)    if [[ -z $VAGRANT_COMMAND ]]; then
+                          VAGRANT_COMMAND=provision
+                      else
+                          echo "Specify 'provision' only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # Destroy the VM.
-        destroy)          VAGRANT_COMMAND=destroy
-                          ;;
+        destroy)      if [[ -z $VAGRANT_COMMAND ]]; then
+                          VAGRANT_COMMAND=destroy
+                      else
+                          echo "Specify 'destroy' only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # SSH into the VM.
-        ssh)              VAGRANT_COMMAND=ssh_into_vm
-                          ;;
+        ssh)          if [[ -z $VAGRANT_COMMAND ]]; then
+                          VAGRANT_COMMAND=ssh_into_vm
+                      else
+                          echo "Specify 'ssh' only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # Get the VM's status.
-        status)           VAGRANT_COMMAND=status
-                          ;;
+        status)       if [[ -z $VAGRANT_COMMAND ]]; then
+                          VAGRANT_COMMAND=status
+                      else
+                          echo "Specify 'status' only once."
+                          helphint
+                          exit 1
+                      fi
+                      ;;
 
         # Capture the whole docker command.
-        docker)           DOCKER_COMMAND="$@"
-                          break
-                          ;;
+        docker)       DOCKER_COMMAND="$@"
+                      break
+                      ;;
 
         # Unrecognized options.
-        -*|--*)           echo "Unrecognized option: $1"
-                          helphint
-                          exit 1
-                          ;;
+        -*|--*)       echo "Unrecognized option: $1"
+                      helphint
+                      exit 1
+                      ;;
 
         # Unrecognized commands.
-        *)                echo "Unrecognized command: $1"
-                          helphint
-                          exit 1
-                          ;;
+        *)            echo "Unrecognized command: $1"
+                      helphint
+                      exit 1
+                      ;;
 
     esac
 
