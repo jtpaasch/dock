@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # DOCK
-# Manage docker images and containers on a Vagrant VM.
+# Run docker on a Vagrant VM.
 #
 # Author JT Paasch
 # License MIT <http://opensource.org/licenses/MIT>
@@ -225,7 +225,7 @@ while (( "$#" )); do
                           shift
                           BOX_IP_ADDRESS=$1
                       else
-                          echo "Specify --ip only once."
+                          echo "--ip can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -236,7 +236,7 @@ while (( "$#" )); do
                           shift
                           BOX_IDENTIFIER=$1
                       else
-                          echo "Specify --box only once."
+                          echo "--box can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -247,7 +247,7 @@ while (( "$#" )); do
                           shift
                           SHARE=$1
                       else
-                          echo "Specify --share only once."
+                          echo "--share can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -257,7 +257,7 @@ while (( "$#" )); do
         start)        if [[ -z $VAGRANT_COMMAND ]]; then
                           VAGRANT_COMMAND=up
                       else
-                          echo "Specify 'start' only once."
+                          echo "'start' can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -267,7 +267,7 @@ while (( "$#" )); do
         stop)         if [[ -z $VAGRANT_COMMAND ]]; then
                           VAGRANT_COMMAND=down
                       else
-                          echo "Specify 'stop' only once."
+                          echo "'stop' can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -277,7 +277,7 @@ while (( "$#" )); do
         provision)    if [[ -z $VAGRANT_COMMAND ]]; then
                           VAGRANT_COMMAND=provision
                       else
-                          echo "Specify 'provision' only once."
+                          echo "'provision' can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -287,7 +287,7 @@ while (( "$#" )); do
         destroy)      if [[ -z $VAGRANT_COMMAND ]]; then
                           VAGRANT_COMMAND=destroy
                       else
-                          echo "Specify 'destroy' only once."
+                          echo "'destroy' can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -297,7 +297,7 @@ while (( "$#" )); do
         ssh)          if [[ -z $VAGRANT_COMMAND ]]; then
                           VAGRANT_COMMAND=ssh_into_vm
                       else
-                          echo "Specify 'ssh' only once."
+                          echo "'ssh' can only be specified once."
                           helphint
                           exit 1
                       fi
@@ -307,7 +307,7 @@ while (( "$#" )); do
         status)       if [[ -z $VAGRANT_COMMAND ]]; then
                           VAGRANT_COMMAND=status
                       else
-                          echo "Specify 'status' only once."
+                          echo "'status' can only be specified once."
                           helphint
                           exit 1
                       fi
